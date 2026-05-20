@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Key, ShieldAlert, Cpu } from 'lucide-react';
+import { Menu, Key, Cpu } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import Sidebar from './Sidebar';
 import ChatWindow from '../chat/ChatWindow';
@@ -13,25 +13,8 @@ export default function Dashboard() {
     setIsSidebarOpen, 
     apiStatus, 
     setIsApiKeyModalOpen,
-    activeAgent,
-    apiProvider,
-    activeModel,
-    setActiveModel
+    activeAgent
   } = useApp();
-
-  const GEMINI_MODELS = [
-    { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
-    { value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash' },
-    { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro' },
-    { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro' }
-  ];
-
-  const GROQ_MODELS = [
-    { value: 'llama-3.3-70b-versatile', label: 'Llama 3.3 70B' },
-    { value: 'llama-3.1-8b-instant', label: 'Llama 3.1 8B' }
-  ];
-
-  const modelsList = apiProvider === 'gemini' ? GEMINI_MODELS : GROQ_MODELS;
 
   const getThemeTextClass = () => {
     if (!activeAgent) return 'text-slate-400';
@@ -57,7 +40,7 @@ export default function Dashboard() {
       <div className="flex-1 h-full flex flex-col overflow-hidden relative z-10">
         
         {/* Top Navigation / Mobile responsive header */}
-        <header className="px-6 py-4 glass-panel border-b border-slate-800/50 flex items-center justify-between z-20">
+        <header className="px-5 py-3 border-b border-slate-800/40 bg-slate-950/20 flex items-center justify-between z-20">
           
           {/* Mobile Menu & Title */}
           <div className="flex items-center gap-3">
@@ -74,64 +57,21 @@ export default function Dashboard() {
             {/* Desktop status info */}
             <div className="flex items-center gap-2">
               <div className="p-1.5 bg-emerald-500/10 rounded-md border border-emerald-500/20">
-                <Cpu className="w-4 h-4 text-emerald-400 pulse-heart" />
+                <Cpu className="w-4 h-4 text-emerald-400" />
               </div>
               <span className="font-bold text-xs uppercase tracking-widest font-orbitron text-slate-300">
                 MediAI OS
               </span>
-              <span className="hidden md:inline-block text-[9px] bg-slate-950/60 border border-slate-800 text-slate-500 px-1.5 py-0.5 rounded tracking-widest font-mono">
-                SECURE CONSOLE
-              </span>
             </div>
           </div>
  
-          {/* Active Agent Subtitle Display */}
-          <div className="hidden lg:flex items-center gap-2 text-xs">
-            <span className="text-slate-500 uppercase font-rajdhani font-semibold tracking-wider">Active Channel:</span>
-            <span className={`font-bold font-orbitron uppercase tracking-wide px-2 py-0.5 bg-slate-950/60 border border-slate-800 rounded ${getThemeTextClass()}`}>
-              {activeAgent ? activeAgent.name : 'ALL INTEL UNITS'}
-            </span>
-          </div>
+          
  
           {/* Right Controls */}
           <div className="flex items-center gap-3">
-            {/* Active Provider Engine Badge */}
-            {apiStatus === 'valid' && (
-              <button
-                onClick={() => setIsApiKeyModalOpen(true)}
-                className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold font-orbitron tracking-wider cursor-pointer uppercase transition-all duration-300 ${
-                  apiProvider === 'gemini'
-                    ? 'bg-cyan-950/20 border-cyan-800/30 text-cyan-300 hover:border-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.1)]'
-                    : 'bg-orange-950/20 border-orange-800/30 text-orange-300 hover:border-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.1)]'
-                }`}
-                title="Switch secure intelligence engine"
-              >
-                <span className={`w-2 h-2 rounded-full ${apiProvider === 'gemini' ? 'bg-cyan-400' : 'bg-orange-400'} animate-pulse`} />
-                {apiProvider}
-              </button>
-            )}
+            
 
-            {/* Model Selector Dropdown */}
-            {apiStatus === 'valid' && (
-              <div className="flex items-center gap-1.5 bg-slate-950/60 border border-slate-800/80 rounded-xl px-2.5 py-1.5">
-                <Cpu className={`w-3.5 h-3.5 shrink-0 ${apiProvider === 'gemini' ? 'text-cyan-400' : 'text-orange-400'}`} />
-                <select
-                  value={activeModel}
-                  onChange={(e) => setActiveModel(e.target.value)}
-                  className="bg-transparent text-slate-200 text-xs font-semibold uppercase tracking-wider font-rajdhani focus:outline-none cursor-pointer pr-1"
-                >
-                  {modelsList.map((model) => (
-                    <option 
-                      key={model.value} 
-                      value={model.value}
-                      className="bg-[#030712] text-slate-300 font-sans normal-case"
-                    >
-                      {model.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+            
 
             {/* Status indicator button */}
             <button

@@ -89,17 +89,14 @@ export default function ChatWindow() {
     <div className="flex-1 flex flex-col h-full overflow-hidden text-slate-100 relative">
       
       {/* 1. Header showing active agent */}
-      <div className="px-8 py-5 border-b border-slate-800/60 bg-slate-950/20 flex items-center justify-between z-10">
+      <div className="px-6 py-4 border-b border-slate-800/40 bg-slate-950/10 flex items-center justify-between z-10">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-bold font-orbitron uppercase tracking-wider text-slate-100">
+            <h2 className="text-base font-semibold tracking-wide text-slate-200">
               {activeAgent.name}
             </h2>
-            <span className={`inline-block w-2.5 h-2.5 rounded-full ${
-              apiStatus === 'valid' ? 'bg-emerald-500' : 'bg-rose-500'
-            } animate-pulse`} />
           </div>
-          <p className="text-xs text-slate-400 font-rajdhani tracking-wider uppercase">
+          <p className="text-xs text-slate-500 font-rajdhani tracking-wider">
             {activeAgent.role}
           </p>
         </div>
@@ -116,11 +113,11 @@ export default function ChatWindow() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <h3 className="text-xl font-bold uppercase tracking-wider font-orbitron text-slate-200 mb-2">
+            <h3 className="text-lg font-medium tracking-wide text-slate-200 mb-1">
               {activeAgent.name}
             </h3>
             
-            <p className="text-slate-400 text-xs tracking-widest uppercase mb-8 font-rajdhani">
+            <p className="text-slate-500 text-xs tracking-wider mb-6 font-rajdhani">
               {activeAgent.role}
             </p>
 
@@ -131,19 +128,15 @@ export default function ChatWindow() {
                   <button
                     key={idx}
                     onClick={() => handlePromptClick(prompt)}
-                    className="p-3.5 text-center text-xs bg-slate-950/40 hover:bg-slate-900/60 border border-slate-800/65 hover:border-slate-700/60 rounded-xl text-slate-300 hover:text-slate-100 transition duration-300 cursor-pointer"
+                    className="p-3 text-center text-xs bg-slate-900/40 hover:bg-slate-800/40 border border-slate-800/50 hover:border-slate-700/50 rounded-lg text-slate-400 hover:text-slate-200 transition duration-200 cursor-pointer"
                   >
-                    "{prompt}"
+                    {prompt}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Subtle disclaimers */}
-            <p className="mt-8 text-[9px] text-slate-650 leading-relaxed max-w-md mx-auto italic opacity-75">
-              *Disclaimer: Informational resources only. In case of emergency, call 112 or 108 immediately.
-            </p>
-          </motion.div>
+            </motion.div>
         ) : (
           /* Render conversation history */
           <div className="space-y-4 max-w-4xl mx-auto">
@@ -165,10 +158,10 @@ export default function ChatWindow() {
       </div>
 
       {/* 3. Input Text Bar Form */}
-      <div className="p-6 border-t border-slate-800/60 bg-slate-950/20 z-10">
+      <div className="p-4 border-t border-slate-800/40 bg-slate-950/10 z-10">
         <form onSubmit={handleSend} className="max-w-4xl mx-auto">
           {apiStatus !== 'valid' && (
-            <div className="mb-3.5 p-3 rounded-xl bg-rose-950/20 border border-rose-800/40 flex items-center justify-between text-xs text-rose-400">
+            <div className="mb-3 p-2.5 rounded-lg bg-rose-950/20 border border-rose-800/40 flex items-center justify-between text-xs text-rose-400">
               <div className="flex gap-2 items-center">
                 <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
                 <span>API Connection is inactive. Authenticate to enable diagnostics.</span>
@@ -176,9 +169,9 @@ export default function ChatWindow() {
               <button
                 type="button"
                 onClick={() => setIsApiKeyModalOpen(true)}
-                className="px-3 py-1.5 bg-rose-900/30 hover:bg-rose-900/50 border border-rose-700/50 rounded-lg font-semibold uppercase tracking-wider font-rajdhani transition cursor-pointer"
+                className="px-2.5 py-1 bg-rose-900/30 hover:bg-rose-900/50 border border-rose-700/50 rounded-md font-medium text-xs transition cursor-pointer"
               >
-                Connect Key
+                Connect
               </button>
             </div>
           )}
@@ -188,15 +181,15 @@ export default function ChatWindow() {
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder={`Query ${activeAgent.name}... (Press Enter to Send)`}
+              placeholder={`Ask ${activeAgent.name}...`}
               rows="1"
               disabled={isAiLoading}
-              className={`w-full bg-slate-950/70 border border-slate-800 rounded-2xl py-4 pl-5 pr-16 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 transition duration-300 resize-none font-sans min-h-[56px] max-h-[160px] ${getThemeBorderClass()}`}
+              className={`w-full bg-slate-900/60 border border-slate-800 rounded-xl py-3 pl-4 pr-12 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-slate-600 transition duration-200 resize-none font-sans min-h-[48px] max-h-[120px]`}
             />
             <button
               type="submit"
               disabled={!inputText.trim() || isAiLoading}
-              className={`absolute right-3.5 bottom-3.5 p-2 rounded-xl text-slate-100 cursor-pointer transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed ${getThemeGlowButton()}`}
+              className="absolute right-2.5 bottom-2.5 p-2 rounded-lg text-slate-300 bg-slate-800 hover:bg-slate-700 cursor-pointer transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <Send className="w-4 h-4" />
             </button>

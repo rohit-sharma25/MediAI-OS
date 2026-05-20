@@ -6,8 +6,9 @@ import {
   Shield, 
   AlertTriangle, 
   Cpu, 
-  ChevronRight,
-  Database
+  Clock,
+  ShieldCheck,
+  Brain
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { agents } from '../../data/agents';
@@ -19,10 +20,40 @@ const IconMap = {
   AlertTriangle: AlertTriangle
 };
 
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good morning';
+  if (hour < 17) return 'Good afternoon';
+  return 'Good evening';
+};
+
+const features = [
+  {
+    icon: Clock,
+    title: '24/7 Available',
+    description: 'Access medical assistance anytime'
+  },
+  {
+    icon: Brain,
+    title: 'RAG-Powered',
+    description: 'Intelligent responses from medical knowledge'
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Privacy-Focused',
+    description: 'Your data stays on your device'
+  }
+];
+
+const footerLinks = [
+  { label: 'About', href: '#' },
+  { label: 'Help', href: '#' },
+  { label: 'Privacy', href: '#' }
+];
+
 export default function AgentHub() {
   const { setActiveAgent } = useApp();
 
-  // Stagger animation container
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -39,28 +70,54 @@ export default function AgentHub() {
   };
 
   return (
-    <div className="flex-1 w-full overflow-y-auto px-6 py-10 md:px-12 md:py-16 text-slate-100 bg-black flex flex-col justify-start items-center">
-      {/* Welcome Banner */}
+    <div className="flex-1 w-full overflow-y-auto px-6 py-10 md:px-12 md:py-16 text-slate-100 bg-gradient-to-b from-black via-slate-950/30 to-black flex flex-col justify-start items-center">
+      {/* Welcome Banner with Time-based Greeting */}
       <motion.div 
-        className="max-w-4xl w-full text-center mb-12 md:mb-16"
+        className="max-w-4xl w-full text-center mb-10 md:mb-12"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="inline-flex p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 mb-4 justify-center items-center">
-          <Cpu className="w-8 h-8 text-emerald-400 pulse-heart" />
+        <p className="text-slate-500 text-xs font-medium tracking-wider mb-2">
+          {getGreeting()}
+        </p>
+        <div className="inline-flex p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20 mb-4 justify-center items-center">
+          <Cpu className="w-6 h-6 text-emerald-400" />
         </div>
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-wider font-orbitron uppercase bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent mb-3">
-          MediAI Specialist Portal
+        <h1 className="text-2xl md:text-3xl font-semibold tracking-wider text-slate-200 mb-2">
+          Welcome to MediAI
         </h1>
-        <p className="text-slate-400 text-sm md:text-base font-rajdhani tracking-widest uppercase max-w-xl mx-auto">
-          Access specialized diagnostic intelligence units powered by client-side RAG systems
+        <p className="text-slate-500 text-sm font-rajdhani tracking-wider max-w-xl mx-auto">
+          Select an agent to get started
         </p>
       </motion.div>
 
-      {/* Grid of Agent Cards */}
+      {/* Feature Cards */}
       <motion.div 
-        className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 max-w-7xl w-full"
+        className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl w-full mb-10"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+      >
+        {features.map((feature, idx) => (
+          <div 
+            key={idx}
+            className="flex items-center gap-3 p-3 rounded-lg border border-slate-800/60 bg-slate-900/30"
+          >
+            <div className="p-2 rounded-md bg-slate-800/50">
+              <feature.icon className="w-4 h-4 text-slate-400" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-slate-300">{feature.title}</p>
+              <p className="text-[10px] text-slate-500">{feature.description}</p>
+            </div>
+          </div>
+        ))}
+      </motion.div>
+
+      {/* Grid of Agent Cards with Accent Border */}
+      <motion.div 
+        className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 max-w-7xl w-full"
         variants={containerVariants}
         initial="hidden"
         animate="show"
@@ -68,18 +125,17 @@ export default function AgentHub() {
         {agents.map((agent) => {
           const AgentIcon = IconMap[agent.icon] || Shield;
           
-          // Color themes for card glows & highlights
           const themeColor = 
             agent.avatarTheme === 'rose' ? 'text-rose-400' :
             agent.avatarTheme === 'cyan' ? 'text-cyan-400' :
             agent.avatarTheme === 'emerald' ? 'text-emerald-400' :
             'text-amber-400';
 
-          const bgHoverGlow = 
-            agent.avatarTheme === 'rose' ? 'hover:border-rose-500/40 hover:shadow-[0_0_20px_rgba(244,63,94,0.15)]' :
-            agent.avatarTheme === 'cyan' ? 'hover:border-cyan-500/40 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]' :
-            agent.avatarTheme === 'emerald' ? 'hover:border-emerald-500/40 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]' :
-            'hover:border-amber-500/40 hover:shadow-[0_0_20px_rgba(245,158,11,0.15)]';
+          const accentBorder = 
+            agent.avatarTheme === 'rose' ? 'border-l-rose-500' :
+            agent.avatarTheme === 'cyan' ? 'border-l-cyan-500' :
+            agent.avatarTheme === 'emerald' ? 'border-l-emerald-500' :
+            'border-l-amber-500';
 
           const iconBg = 
             agent.avatarTheme === 'rose' ? 'bg-rose-500/10 border-rose-500/20' :
@@ -92,59 +148,53 @@ export default function AgentHub() {
               key={agent.id}
               variants={itemVariants}
               onClick={() => setActiveAgent(agent)}
-              className={`glass-card p-6 rounded-2xl flex flex-col justify-between cursor-pointer transition-all duration-300 border border-slate-800/80 bg-slate-950/40 ${bgHoverGlow}`}
-              whileHover={{ y: -6 }}
+              className={`p-5 rounded-xl flex flex-col justify-between cursor-pointer transition-all duration-200 border border-slate-800/60 border-l-2 ${accentBorder} bg-slate-900/40 hover:bg-slate-800/40`}
+              whileHover={{ y: -2 }}
             >
               <div>
                 {/* Header & Icon */}
-                <div className="flex items-start justify-between mb-5">
-                  <div className={`p-3 rounded-xl border ${iconBg}`}>
-                    <AgentIcon className={`w-6 h-6 ${themeColor}`} />
+                <div className="flex items-start justify-between mb-4">
+                  <div className={`p-2.5 rounded-lg border ${iconBg}`}>
+                    <AgentIcon className={`w-5 h-5 ${themeColor}`} />
                   </div>
-                  <span className="text-[9px] font-mono bg-slate-950 border border-slate-800 text-slate-500 px-2 py-0.5 rounded tracking-widest">
-                    ACTIVE
-                  </span>
                 </div>
 
                 {/* Agent Identity */}
-                <h3 className="text-lg font-bold font-orbitron uppercase text-slate-100 mb-1 tracking-wide">
+                <h3 className="text-base font-semibold text-slate-100 mb-1 tracking-wide">
                   {agent.name}
                 </h3>
-                <p className={`text-xs font-semibold uppercase tracking-wider font-rajdhani mb-4 ${themeColor}`}>
+                <p className={`text-xs font-medium uppercase tracking-wider font-rajdhani mb-3 ${themeColor}`}>
                   {agent.role}
                 </p>
 
                 {/* Description */}
-                <p className="text-slate-400 text-xs leading-relaxed mb-6 font-sans">
+                <p className="text-slate-400 text-xs leading-relaxed mb-2 font-sans">
                   {agent.description}
                 </p>
-              </div>
-
-              {/* Card Footer Info */}
-              <div className="pt-4 border-t border-slate-900 flex items-center justify-between text-[11px]">
-                <div className="flex items-center gap-1 text-slate-500 font-rajdhani">
-                  <Database className="w-3.5 h-3.5" />
-                  <span className="uppercase tracking-wider">RAG: {agent.knowledgeBaseFile}.md</span>
-                </div>
-                <div className={`flex items-center gap-0.5 font-semibold ${themeColor} uppercase tracking-wider font-rajdhani`}>
-                  <span>Access</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </div>
               </div>
             </motion.div>
           );
         })}
       </motion.div>
 
-      {/* Critical Hub Notice */}
-      <motion.p 
-        className="mt-16 text-[10px] text-slate-600 tracking-wider text-center max-w-md font-sans"
+      {/* Footer Links */}
+      <motion.div 
+        className="mt-12 flex items-center gap-6"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.6 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
       >
-        MediAI diagnostic engines evaluate informational parameters only. Please confirm critical decisions with primary care physicians or institutional health resources.
-      </motion.p>
-    </div>
+        {footerLinks.map((link, idx) => (
+          <a 
+            key={idx}
+            href={link.href}
+            className="text-xs text-slate-600 hover:text-slate-400 transition-colors duration-200"
+          >
+            {link.label}
+          </a>
+        ))}
+      </motion.div>
+
+      </div>
   );
 }
